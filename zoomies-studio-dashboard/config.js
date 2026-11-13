@@ -1,1 +1,0 @@
-window.OS_CONFIG={biz:"zoomies",url:"https://yxikzazlgowdsvihptyd.supabase.co",key:"sb_publishable_agsLtaaslkJqmV3kqYv9lQ_knGV7ff6",ghostUrl:"https://mianehsanullah022-jarvis.github.io/ghost-dashboard/",zoomiesUrl:"https://mianehsanullah022-jarvis.github.io/zoomies-studio-dashboard/"};
