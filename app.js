@@ -370,7 +370,7 @@
 
   /* ---------- shell ---------- */
   /* ---------- login: password + authenticator-app code (2-step), brute-force slowdown ---------- */
-  const SETUP = location.hash === "#setup";
+  const isSetup = () => /setup/.test(location.hash) || /[?&]setup/.test(location.search);
   const fails = () => { try { return JSON.parse(store.get("bossos.fails", "{}")); } catch (e) { return {}; } };
   const waitSecs = () => { const f = fails(); return f.n >= 5 ? Math.max(0, Math.ceil((f.until - Date.now()) / 1000)) : 0; };
   const failed = () => { const f = fails(), n = (f.n || 0) + 1; store.set("bossos.fails", JSON.stringify({ n, until: Date.now() + Math.min(900, 30 * Math.pow(2, Math.max(0, n - 5))) * 1000 })); };
@@ -411,7 +411,7 @@
       <div class="field"><label>Email</label><input class="in" name="email" type="email" autocomplete="username" required></div>
       <div class="field"><label>Password</label><input class="in" name="password" type="password" autocomplete="current-password" minlength="8" required></div>
       <button class="btn pri wide" id="go">Log in</button><div class="msg ${err ? "err" : ""}" id="lm">${esc(msg || "")}</div>
-      ${SETUP ? '<div style="text-align:center;color:var(--dim);font-size:12px">First time only: <button type="button" class="link" id="su">Create my account</button> (password 12+ characters)</div>' : ""}`);
+      ${isSetup() ? '<div style="text-align:center;color:var(--dim);font-size:12px">First time only: <button type="button" class="link" id="su">Create my account</button> (password 12+ characters)</div>' : ""}`);
     const m = $("#lm");
     const run = async (mode) => {
       const email = f.email.value.trim(), password = f.password.value;
@@ -469,7 +469,7 @@
   }
   let timer = null;
   function boot() { shell(); load(); clearInterval(timer); timer = setInterval(() => { if (!document.hidden && session) load(); }, 60000); }
-  window.addEventListener("hashchange", () => { const p = (location.hash || "#overview").slice(1); if (p !== page && PAGES.some((x) => x[0] === p)) { page = p; draw(); } });
+  window.addEventListener("hashchange", () => { if (!session && !$("input[name=c]") && !$("img[alt=\"QR code\"]")) { loginView(); return; } const p = (location.hash || "#overview").slice(1); if (p !== page && PAGES.some((x) => x[0] === p)) { page = p; draw(); } });
   document.documentElement.dataset.biz = BIZ; document.title = NAME + " OS";
   session ? boot() : loginView();
 })();
